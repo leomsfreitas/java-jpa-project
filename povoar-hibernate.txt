@@ -1,0 +1,45 @@
+java -jar C:\Users\leosu\.m2\repository\com\h2database\h2\2.3.232\h2-2.3.232.jar
+
+CREATE TABLE IF NOT EXISTS alunos (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    ra VARCHAR(12) NOT NULL,
+    email VARCHAR(30),
+    grade1 NUMERIC(5,2),
+    grade2 NUMERIC(5,2),
+    grade3 NUMERIC(5,2),
+    status VARCHAR(15)  -- APROVADO, RECUPERACAO, REPROVADO
+);
+
+
+INSERT INTO alunos (name, ra, email, grade1, grade2, grade3, status) VALUES
+('Ana Souza',        'SCL000000001', 'ana.souza@ifsp.edu.br', 8.00, 7.50, 9.00, 'APROVADO'),
+('Carlos Lima',      'SCL000000002', 'carlos.lima@ifsp.edu.br', 5.50, 6.00, 5.00, 'RECUPERACAO'),
+('Fernanda Alves',   'SCL000000003', 'fernanda.alves@ifsp.edu.br', 3.00, 4.00, 3.50, 'REPROVADO'),
+('João Pereira',     'SCL000000004', 'joao.pereira@ifsp.edu.br', 6.00, 6.50, 7.00, 'APROVADO'),
+('Mariana Silva',    'SCL000000005', 'mariana.silva@ifsp.edu.br', 4.50, 4.00, 5.00, 'RECUPERACAO'),
+('Lucas Mendes',     'SCL000000006', 'lucas.mendes@ifsp.edu.br', 9.00, 8.50, 9.50, 'APROVADO'),
+('Patrícia Costa',   'SCL000000007', 'patricia.costa@ifsp.edu.br', 2.50, 3.00, 4.00, 'REPROVADO'),
+('Rafael Torres',    'SCL000000008', 'rafael.torres@ifsp.edu.br', 7.00, 6.50, 6.00, 'APROVADO'),
+('Gabriela Rocha',   'SCL000000009', 'gabriela.rocha@ifsp.edu.br', 4.20, 4.80, 4.50, 'RECUPERACAO'),
+('Bruno Castro',     'SCL000000010', 'bruno.castro@ifsp.edu.br', 5.90, 6.10, 6.00, 'APROVADO'),
+('Larissa Gomes',    'SCL000000011', 'larissa.gomes@ifsp.edu.br', 3.80, 3.50, 4.00, 'REPROVADO'),
+('Pedro Almeida',    'SCL000000012', 'pedro.almeida@ifsp.edu.br', 8.50, 9.00, 8.80, 'APROVADO'),
+('Camila Martins',   'SCL000000013', 'camila.martins@ifsp.edu.br', 4.60, 5.00, 4.80, 'RECUPERACAO'),
+('Thiago Moreira',   'SCL000000014', 'thiago.moreira@ifsp.edu.br', 6.20, 6.40, 6.50, 'APROVADO'),
+('Juliana Farias',   'SCL000000015', 'juliana.farias@ifsp.edu.br', 2.80, 3.20, 3.50, 'REPROVADO'),
+('Rodrigo Barros',   'SCL000000016', 'rodrigo.barros@ifsp.edu.br', 7.50, 7.80, 8.00, 'APROVADO'),
+('Isabela Nunes',    'SCL000000017', 'isabela.nunes@ifsp.edu.br', 4.30, 4.20, 4.60, 'RECUPERACAO'),
+('Vinícius Cardoso', 'SCL000000018', 'vinicius.cardoso@ifsp.edu.br', 9.00, 8.80, 9.20, 'APROVADO'),
+('Aline Santos',     'SCL000000019', 'aline.santos@ifsp.edu.br', 3.40, 3.60, 3.80, 'REPROVADO'),
+('Felipe Duarte',    'SCL000000020', 'felipe.duarte@ifsp.edu.br', 5.50, 5.80, 5.70, 'RECUPERACAO'),
+('Renata Vasconcelos','SCL000000021','renata.vasconcelos@ifsp.edu.br', 6.50, 6.70, 6.80, 'APROVADO'),
+('Marcelo Pinto',    'SCL000000022', 'marcelo.pinto@ifsp.edu.br', 4.10, 4.50, 4.40, 'RECUPERACAO'),
+('Tatiane Oliveira', 'SCL000000023', 'tatiane.oliveira@ifsp.edu.br', 2.00, 2.50, 3.00, 'REPROVADO'),
+('Gustavo Ribeiro',  'SCL000000024', 'gustavo.ribeiro@ifsp.edu.br', 8.20, 8.00, 8.10, 'APROVADO'),
+('Sofia Fernandes',  'SCL000000025', 'sofia.fernandes@ifsp.edu.br', 5.00, 5.20, 4.90, 'RECUPERACAO'),
+('Diego Batista',    'SCL000000026', 'diego.batista@ifsp.edu.br', 3.50, 3.80, 3.60, 'REPROVADO'),
+('Amanda Costa',     'SCL000000027', 'amanda.costa@ifsp.edu.br', 6.80, 6.50, 7.00, 'APROVADO'),
+('Hugo Martins',     'SCL000000028', 'hugo.martins@ifsp.edu.br', 4.80, 4.60, 4.50, 'RECUPERACAO'),
+('Natália Souza',    'SCL000000029', 'natalia.souza@ifsp.edu.br', 9.50, 9.80, 9.20, 'APROVADO'),
+('Paulo Henrique',   'SCL000000030', 'paulo.henrique@ifsp.edu.br', 2.80, 3.00, 2.50, 'REPROVADO');
