@@ -30,6 +30,7 @@ package br.edu.ifsp.leo.dao;
 import br.edu.ifsp.leo.model.Student;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StudentDao {
     void save(Student student);
@@ -37,5 +38,6 @@ public interface StudentDao {
     void update(Student student);
     List<Student> findAllApproved();
     List<Student> findAll();
-    Student findByName(String name);
+    Optional<Student> findByName(String name);
+    Optional<Student> findById(Long id);
 }

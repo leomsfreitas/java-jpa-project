@@ -25,32 +25,49 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package br.edu.ifsp.leo.view;
+package br.edu.ifsp.leo.util;
 
-import br.edu.ifsp.leo.model.Status;
+import br.edu.ifsp.leo.dto.StudentDto;
+import br.edu.ifsp.leo.model.Student;
 
-import java.math.BigDecimal;
-
-public class TableView {
-    private TableView() {
+public class MapStudent {
+    private MapStudent() {
 
     }
 
-    public static void printHeader() {
-        System.out.println("+----+--------------------------------+----------------------+--------------+--------+--------+--------+-------------+");
-        System.out.printf("| %-2s | %-30s | %-20s | %-12s | %-6s | %-6s | %-6s | %-11s |%n",
-                "ID", "Email", "Nome", "RA", "Nota 1", "Nota 2", "Nota 3", "Status");
-        System.out.println("+----+--------------------------------+----------------------+--------------+--------+--------+--------+-------------+");
+    public static Student fromStudentDto(StudentDto studentDto) {
+        if (studentDto == null)
+            return null;
+
+        Student student = new Student(
+                studentDto.name(),
+                studentDto.ra(),
+                studentDto.email(),
+                studentDto.grade1(),
+                studentDto.grade2(),
+                studentDto.grade3()
+        );
+
+        if (studentDto.id() != null) {
+            student.setId(studentDto.id());
+        }
+
+        return student;
     }
 
-    public static void printFooter() {
-        System.out.println("+----+--------------------------------+----------------------+--------------+--------+--------+--------+-------------+");
+    public static StudentDto toStudentDto(Student student) {
+        if (student == null)
+            return null;
+
+        return new StudentDto(
+                student.getId(),
+                student.getName(),
+                student.getRa(),
+                student.getEmail(),
+                student.getGrade1(),
+                student.getGrade2(),
+                student.getGrade3(),
+                student.getStatus()
+        );
     }
-
-    public static void printRow(Long id, String email, String nome, String ra, BigDecimal nota1, BigDecimal nota2, BigDecimal nota3, Status status) {
-        System.out.printf("| %-2s | %-30s | %-20s | %-12s | %-6.2f | %-6.2f | %-6.2f | %-11s |%n",
-                id, email, nome, ra, nota1, nota2, nota3, status.name());
-    }
-
-
 }

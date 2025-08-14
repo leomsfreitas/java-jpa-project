@@ -27,7 +27,7 @@
 
 package br.edu.ifsp.leo;
 
-import br.edu.ifsp.leo.model.Student;
+import br.edu.ifsp.leo.dto.StudentDto;
 import br.edu.ifsp.leo.persistence.JpaFactory;
 import br.edu.ifsp.leo.persistence.StudentDaoImpl;
 import br.edu.ifsp.leo.service.StudentService;
@@ -49,7 +49,7 @@ public class Main {
         int opt;
 
         EntityManager em = JpaFactory.getEntityManager();
-        StudentService service = new StudentService(new StudentDaoImpl(em));
+        StudentService service = new StudentService(new StudentDaoImpl(em), em);
 
         do {
             MenuView.show();
@@ -59,6 +59,7 @@ public class Main {
 
             switch (opt) {
                 case 1 -> {
+
                     System.out.print("Nome: ");
                     String name = scanner.nextLine();
                     System.out.print("RA: ");
@@ -72,38 +73,26 @@ public class Main {
                     System.out.print("Nota 3: ");
                     BigDecimal grade3 = scanner.nextBigDecimal();
                     scanner.nextLine();
-
-                    em.getTransaction().begin();
                     try {
-                        service.register(name, ra, email, grade1, grade2, grade3);
-                        em.getTransaction().commit();
+                        service.register(StudentDto.of(name, ra, email, grade1, grade2, grade3));
                         System.out.println("Aluno cadastrado com sucesso!");
-                    } catch (Exception e) {
-                        em.getTransaction().rollback();
-                        System.out.println("Erro ao cadastrar: " + e.getMessage());
+                    } catch (RuntimeException e) {
+                        System.out.println(e.getMessage());
                     }
+
                 }
 
                 case 2 -> {
                     System.out.print("ID do aluno para excluir: ");
                     Long id = scanner.nextLong();
                     scanner.nextLine();
-
-                    Student student = em.find(Student.class, id);
-                    if (student == null) {
-                        System.out.println("Aluno não encontrado.");
-                        break;
-                    }
-
-                    em.getTransaction().begin();
                     try {
                         service.deleteById(id);
-                        em.getTransaction().commit();
                         System.out.println("Aluno excluído com sucesso!");
-                    } catch (Exception e) {
-                        em.getTransaction().rollback();
-                        System.out.println("Erro ao excluir: " + e.getMessage());
+                    } catch (RuntimeException e) {
+                        System.out.println(e.getMessage());
                     }
+
                 }
 
                 case 3 -> {
@@ -111,101 +100,85 @@ public class Main {
                     Long id = scanner.nextLong();
                     scanner.nextLine();
 
-                    Student student = em.find(Student.class, id);
-                    if (student == null) {
-                        System.out.println("Aluno não encontrado.");
-                        break;
-                    }
-
-                    System.out.print("Novo nome (" + student.getName() + "): ");
-                    String name = scanner.nextLine();
-                    System.out.print("Novo RA (" + student.getRa() + "): ");
-                    String ra = scanner.nextLine();
-                    System.out.print("Novo email (" + student.getEmail() + "): ");
-                    String email = scanner.nextLine();
-                    System.out.print("Nova nota 1 (" + student.getGrade1() + "): ");
-                    BigDecimal grade1 = scanner.nextBigDecimal();
-                    System.out.print("Nova nota 2 (" + student.getGrade2() + "): ");
-                    BigDecimal grade2 = scanner.nextBigDecimal();
-                    System.out.print("Nova nota 3 (" + student.getGrade3() + "): ");
-                    BigDecimal grade3 = scanner.nextBigDecimal();
-                    scanner.nextLine();
-
-                    student.setName(name);
-                    student.setRa(ra);
-                    student.setEmail(email);
-                    student.setGrade1(grade1);
-                    student.setGrade2(grade2);
-                    student.setGrade3(grade3);
-                    student.calculateStatus();
-
-                    em.getTransaction().begin();
                     try {
-                        service.update(student);
-                        em.getTransaction().commit();
+                        StudentDto student = service.findById(id);
+
+                        System.out.print("Novo nome (" + student.name() + "): ");
+                        String name = scanner.nextLine();
+                        System.out.print("Novo RA (" + student.ra() + "): ");
+                        String ra = scanner.nextLine();
+                        System.out.print("Novo email (" + student.email() + "): ");
+                        String email = scanner.nextLine();
+                        System.out.print("Nova nota 1 (" + student.grade1() + "): ");
+                        BigDecimal grade1 = scanner.nextBigDecimal();
+                        System.out.print("Nova nota 2 (" + student.grade2() + "): ");
+                        BigDecimal grade2 = scanner.nextBigDecimal();
+                        System.out.print("Nova nota 3 (" + student.grade3() + "): ");
+                        BigDecimal grade3 = scanner.nextBigDecimal();
+                        scanner.nextLine();
+
+                        service.update(StudentDto.of(id, name, ra, email, grade1, grade2, grade3));
                         System.out.println("Aluno alterado com sucesso!");
-                    } catch (Exception e) {
-                        em.getTransaction().rollback();
-                        System.out.println("Erro ao alterar: " + e.getMessage());
+                    } catch (RuntimeException e) {
+                        System.out.println(e.getMessage());
                     }
                 }
 
                 case 4 -> {
                     System.out.print("Nome do aluno para buscar: ");
                     String name = scanner.nextLine();
+
                     try {
-                        Student student = service.findByName(name);
-                        if (student != null) {
+                        StudentDto studentDto = service.findByName(name);
+                        if (studentDto != null) {
                             TableView.printHeader();
                             TableView.printRow(
-                                    student.getId(),
-                                    student.getEmail(),
-                                    student.getName(),
-                                    student.getRa(),
-                                    student.getGrade1().toString(),
-                                    student.getGrade2().toString(),
-                                    student.getGrade3().toString(),
-                                    student.getStatus().name()
+                                    studentDto.id(),
+                                    studentDto.email(),
+                                    studentDto.name(),
+                                    studentDto.ra(),
+                                    studentDto.grade1(),
+                                    studentDto.grade2(),
+                                    studentDto.grade3(),
+                                    studentDto.status()
                             );
                             TableView.printFooter();
-                        } else {
-                            System.out.println("Aluno não encontrado.");
                         }
-                    } catch (Exception e) {
-                        System.out.println("Erro ao buscar: " + e.getMessage());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }
                 }
 
                 case 5 -> {
-                    List<Student> approved = service.findAllApproved();
+                    List<StudentDto> approved = service.findAllApproved();
                     TableView.printHeader();
-                    for (Student student : approved) {
+                    for (StudentDto student : approved) {
                         TableView.printRow(
-                                student.getId(),
-                                student.getEmail(),
-                                student.getName(),
-                                student.getRa(),
-                                student.getGrade1().toString(),
-                                student.getGrade2().toString(),
-                                student.getGrade3().toString(),
-                                student.getStatus().name()
+                                student.id(),
+                                student.email(),
+                                student.name(),
+                                student.ra(),
+                                student.grade1(),
+                                student.grade2(),
+                                student.grade3(),
+                                student.status()
                         );
                     }
                     TableView.printFooter();
                 }
                 case 6 -> {
-                    List<Student> all = service.findAll();
+                    List<StudentDto> all = service.findAll();
                     TableView.printHeader();
-                    for (Student student : all) {
+                    for (StudentDto student : all) {
                         TableView.printRow(
-                                student.getId(),
-                                student.getEmail(),
-                                student.getName(),
-                                student.getRa(),
-                                student.getGrade1().toString(),
-                                student.getGrade2().toString(),
-                                student.getGrade3().toString(),
-                                student.getStatus().name()
+                                student.id(),
+                                student.email(),
+                                student.name(),
+                                student.ra(),
+                                student.grade1(),
+                                student.grade2(),
+                                student.grade3(),
+                                student.status()
                         );
                     }
                     TableView.printFooter();

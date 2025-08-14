@@ -28,62 +28,89 @@
 package br.edu.ifsp.leo.service;
 
 import br.edu.ifsp.leo.dao.StudentDao;
-import br.edu.ifsp.leo.model.Student;
+import br.edu.ifsp.leo.dto.StudentDto;
+import br.edu.ifsp.leo.util.MapStudent;
+import jakarta.persistence.EntityManager;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class StudentService {
     private final StudentDao studentDao;
+    private final EntityManager em;
 
-    public StudentService(StudentDao studentDao) {
+    public StudentService(StudentDao studentDao, EntityManager em) {
         this.studentDao = studentDao;
+        this.em = em;
     }
 
-    public void register(String name, String ra, String email, BigDecimal grade1, BigDecimal grade2, BigDecimal grade3) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Nome não pode ser vazio.");
+    public void register(StudentDto studentDto) {
+        try {
+            em.getTransaction().begin();
+            studentDao.save(MapStudent.fromStudentDto(studentDto));
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            throw new RuntimeException("Erro ao cadastrar: " + e.getMessage());
         }
-        if (ra == null || ra.isBlank()) {
-            throw new IllegalArgumentException("RA não pode ser vazio.");
-        }
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException("Email não pode ser vazio.");
-        }
-        if (grade1 == null || grade2 == null || grade3 == null) {
-            throw new IllegalArgumentException("Notas não podem ser nulas.");
-        }
-
-        studentDao.save(new Student(name, ra, email, grade1, grade2, grade3));
-    }
-
-    public List<Student> findAllApproved() {
-        return studentDao.findAllApproved();
     }
 
     public void deleteById(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID não pode ser nulo.");
+        if (id == null) throw new IllegalArgumentException("ID não pode ser nulo.");
+
+        findById(id);
+
+        try {
+            em.getTransaction().begin();
+            studentDao.deleteById(id);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            throw new RuntimeException("Erro ao excluir: " + e.getMessage());
         }
-        studentDao.deleteById(id);
     }
 
-    public void update(Student student) {
-        if (student == null || student.getId() == null) {
-            throw new IllegalArgumentException("Aluno não pode ser nulo e deve ter um ID.");
+    public void update(StudentDto studentDto) {
+        if (studentDto == null) throw new IllegalArgumentException("Aluno não pode ser nulo.");
+
+        studentDao.findById(studentDto.id())
+                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado."));
+
+        try {
+            em.getTransaction().begin();
+            studentDao.update(MapStudent.fromStudentDto(studentDto));
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            throw new RuntimeException("Erro ao atualizar aluno: " + e.getMessage(), e);
         }
-        studentDao.update(student);
     }
 
-    public Student findByName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Nome não pode ser vazio.");
-        }
-        return studentDao.findByName(name);
+    public StudentDto findByName(String name) {
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome não pode ser vazio.");
+
+        return MapStudent.toStudentDto(studentDao.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado.")));
     }
 
-    public List<Student> findAll() {
-        return studentDao.findAll();
+    public StudentDto findById(Long id) {
+        if (id == null) throw new IllegalArgumentException("ID não pode ser nulo.");
+
+        return MapStudent.toStudentDto(studentDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado.")));
+    }
+
+    public List<StudentDto> findAllApproved() {
+        return studentDao.findAllApproved()
+                .stream()
+                .map(MapStudent::toStudentDto)
+                .toList();
+    }
+
+    public List<StudentDto> findAll() {
+        return studentDao.findAll()
+                .stream()
+                .map(MapStudent::toStudentDto)
+                .toList();
     }
 
 }

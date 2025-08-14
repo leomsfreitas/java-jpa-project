@@ -25,32 +25,26 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package br.edu.ifsp.leo.view;
+package br.edu.ifsp.leo.dto;
 
 import br.edu.ifsp.leo.model.Status;
-
 import java.math.BigDecimal;
 
-public class TableView {
-    private TableView() {
-
+public record StudentDto(
+        Long id,
+        String name,
+        String ra,
+        String email,
+        BigDecimal grade1,
+        BigDecimal grade2,
+        BigDecimal grade3,
+        Status status
+) {
+    public static StudentDto of(String name, String ra, String email, BigDecimal grade1, BigDecimal grade2, BigDecimal grade3) {
+        return new StudentDto(null, name, ra, email, grade1, grade2, grade3, null);
     }
 
-    public static void printHeader() {
-        System.out.println("+----+--------------------------------+----------------------+--------------+--------+--------+--------+-------------+");
-        System.out.printf("| %-2s | %-30s | %-20s | %-12s | %-6s | %-6s | %-6s | %-11s |%n",
-                "ID", "Email", "Nome", "RA", "Nota 1", "Nota 2", "Nota 3", "Status");
-        System.out.println("+----+--------------------------------+----------------------+--------------+--------+--------+--------+-------------+");
+    public static StudentDto of(Long id,String name, String ra, String email, BigDecimal grade1, BigDecimal grade2, BigDecimal grade3) {
+        return new StudentDto(id, name, ra, email, grade1, grade2, grade3, null);
     }
-
-    public static void printFooter() {
-        System.out.println("+----+--------------------------------+----------------------+--------------+--------+--------+--------+-------------+");
-    }
-
-    public static void printRow(Long id, String email, String nome, String ra, BigDecimal nota1, BigDecimal nota2, BigDecimal nota3, Status status) {
-        System.out.printf("| %-2s | %-30s | %-20s | %-12s | %-6.2f | %-6.2f | %-6.2f | %-11s |%n",
-                id, email, nome, ra, nota1, nota2, nota3, status.name());
-    }
-
-
 }

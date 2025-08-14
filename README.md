@@ -48,9 +48,9 @@ student-management/
 ## Observações
 
 - O status do aluno é calculado pela média das três notas:
-    - **Aprovado**: média > 6
-    - **Recuperação**: média > 4 e ≤ 6
-    - **Reprovado**: média ≤ 4
+    - **Aprovado**: média ≥ 6
+    - **Recuperação**: média ≥ 4 e < 6
+    - **Reprovado**: média < 4
 - O banco de dados pode ser alterado via configuração JPA.
 - O sistema é totalmente interativo via terminal.
 

@@ -60,8 +60,13 @@ public class Student {
     @Column(length = 30)
     private String email;
 
+    @Column(precision = 5, scale = 2)
     private BigDecimal grade1;
+
+    @Column(precision = 5, scale = 2)
     private BigDecimal grade2;
+
+    @Column(precision = 5, scale = 2)
     private BigDecimal grade3;
 
     @Enumerated(EnumType.STRING)
@@ -127,9 +132,9 @@ public class Student {
         BigDecimal avg = grade1.add(grade2).add(grade3)
                 .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP);
 
-        if (avg.compareTo(BigDecimal.valueOf(6)) > 0) {
+        if (avg.compareTo(BigDecimal.valueOf(6)) >= 0) {
             this.status = Status.APROVADO;
-        } else if (avg.compareTo(BigDecimal.valueOf(4)) > 0) {
+        } else if (avg.compareTo(BigDecimal.valueOf(4)) >= 0) {
             this.status = Status.RECUPERACAO;
         } else {
             this.status = Status.REPROVADO;

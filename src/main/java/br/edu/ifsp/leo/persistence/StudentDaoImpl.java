@@ -33,6 +33,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
 import java.util.List;
+import java.util.Optional;
 
 public class StudentDaoImpl implements StudentDao {
     private final EntityManager em;
@@ -72,14 +73,21 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public Student findByName(String name) {
+    public Optional<Student> findByName(String name) {
         String jpql = "SELECT p FROM Student p WHERE p.name = :name";
         try {
-            return this.em.createQuery(jpql, Student.class)
+            return Optional.ofNullable(
+                    this.em.createQuery(jpql, Student.class)
                     .setParameter("name", name)
-                    .getSingleResult();
+                    .getSingleResult()
+            );
         } catch (NoResultException e) {
-            return null;
+            return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<Student> findById(Long id) {
+        return Optional.ofNullable(em.find(Student.class, id));
     }
 }
